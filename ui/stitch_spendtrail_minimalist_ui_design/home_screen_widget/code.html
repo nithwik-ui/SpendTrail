@@ -1,0 +1,128 @@
+<!DOCTYPE html><html lang="en" class="light" style=""><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#181c1d",
+                        "secondary-fixed-dim": "#90d3cb",
+                        "on-tertiary-container": "#ffd7bd",
+                        "on-background": "#181c1d",
+                        "surface-container-highest": "#e0e3e4",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#713d10",
+                        "inverse-on-surface": "#eef1f2",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#006d77",
+                        "surface-bright": "#f7fafb",
+                        "on-primary-fixed-variant": "#004f56",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#301400",
+                        "primary-fixed": "#9ff0fb",
+                        "tertiary-fixed": "#ffdcc5",
+                        "surface": "#f7fafb",
+                        "on-secondary-fixed-variant": "#00504b",
+                        "inverse-surface": "#2d3132",
+                        "secondary-fixed": "#acefe7",
+                        "on-tertiary-fixed-variant": "#6d390c",
+                        "surface-container-high": "#e6e9ea",
+                        "surface-variant": "#e0e3e4",
+                        "surface-container": "#ebeeef",
+                        "primary-fixed-dim": "#82d3de",
+                        "primary": "#00535b",
+                        "surface-tint": "#006972",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#9becf7",
+                        "background": "#f7fafb",
+                        "outline": "#6f797a",
+                        "surface-dim": "#d7dadb",
+                        "on-secondary-fixed": "#00201e",
+                        "surface-container-low": "#f1f4f5",
+                        "tertiary-container": "#8e5426",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#236863",
+                        "on-primary-fixed": "#001f23",
+                        "secondary-container": "#a9ece5",
+                        "on-surface-variant": "#3e494a",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "on-secondary-container": "#286d67",
+                        "inverse-primary": "#82d3de",
+                        "outline-variant": "#bec8ca",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "max-width-desktop": "1200px",
+                        "base": "8px",
+                        "section-gap": "40px",
+                        "gutter": "16px",
+                        "container-padding": "24px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "display": ["Inter"],
+                        "title-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "display": ["44px", {"lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "title-md": ["18px", {"lineHeight": "24px", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    }catch(_e){}</script><meta charset="utf-8"></head><body class="bg-[#e2e8f0]">
+<!-- Widget Container: Simulating a 2x2 Mobile Widget -->
+<div class="relative w-44 h-44 bg-surface rounded-2xl flex flex-col justify-between widget-shadow overflow-hidden group hover:bg-surface-bright transition-colors duration-300 p-6 outline outline-1 outline-outline-variant">
+<!-- Animated Subtle Background (Low Opacity WebGL/Ambient feel) -->
+<div class="absolute inset-0 opacity-[0.03] pointer-events-none">
+
+</div>
+<!-- Widget Header -->
+<div class="relative z-10 flex flex-col gap-0.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant tracking-wider">MONTHLY SPEND</span>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-primary" data-icon="trending_up" data-original-icon="trending_up">trending_up</span>
+<span class="font-label-sm text-label-sm text-primary">+2.4%</span>
+</div>
+</div>
+<!-- Main Figure -->
+<div class="relative z-10">
+<h1 class="text-[32px] leading-tight text-on-surface tracking-tight font-extrabold">₹1,240.50</h1>
+<div class="mt-2 w-full bg-surface-container h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 65%;"></div>
+</div>
+</div>
+<!-- FAB - Contextual & Minimalist -->
+<button class="absolute bottom-4 right-4 bg-primary text-on-primary rounded-full flex items-center justify-center active-tap transition-all hover:brightness-110 z-20 w-12 h-12 shadow-lg">
+<span class="material-symbols-outlined text-[24px]" data-icon="add">add</span>
+</button>
+<!-- Brand Anchor subtle integration -->
+<div class="absolute bottom-4 left-5 opacity-40">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-bold">SpendTrail</span>
+</div>
+</div>
+<!-- Script for interaction simulation -->
+<script class="">
+        document.querySelector('button').addEventListener('click', function() {
+            // Simple visual feedback for the action
+            const btn = this;
+            const icon = btn.querySelector('.material-symbols-outlined');
+            icon.style.transform = 'rotate(90deg)';
+            icon.style.transition = 'transform 0.3s ease';</script></body></html>

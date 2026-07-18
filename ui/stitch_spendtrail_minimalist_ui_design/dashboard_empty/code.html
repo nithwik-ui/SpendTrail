@@ -1,0 +1,293 @@
+<!DOCTYPE html><html lang="en" class="light"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#a9ece5",
+                    "primary-container": "#006d77",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#9ff0fb",
+                    "inverse-on-surface": "#eef1f2",
+                    "surface-container": "#ebeeef",
+                    "outline-variant": "#bec8ca",
+                    "inverse-surface": "#2d3132",
+                    "surface-variant": "#e0e3e4",
+                    "background": "#f7fafb",
+                    "on-surface": "#181c1d",
+                    "primary-fixed-dim": "#82d3de",
+                    "surface-dim": "#d7dadb",
+                    "on-tertiary": "#ffffff",
+                    "surface": "#f7fafb",
+                    "secondary": "#236863",
+                    "tertiary-fixed-dim": "#ffb783",
+                    "outline": "#6f797a",
+                    "on-primary-container": "#9becf7",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#f7fafb",
+                    "on-surface-variant": "#3e494a",
+                    "on-secondary-container": "#286d67",
+                    "tertiary-container": "#8e5426",
+                    "on-secondary-fixed": "#00201e",
+                    "primary": "#00535b",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-container": "#ffd7bd",
+                    "secondary-fixed": "#acefe7",
+                    "secondary-fixed-dim": "#90d3cb",
+                    "inverse-primary": "#82d3de",
+                    "on-tertiary-fixed-variant": "#6d390c",
+                    "error-container": "#ffdad6",
+                    "tertiary": "#713d10",
+                    "on-background": "#181c1d",
+                    "surface-container-highest": "#e0e3e4",
+                    "on-primary-fixed": "#001f23",
+                    "surface-container-high": "#e6e9ea",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed-variant": "#00504b",
+                    "on-tertiary-fixed": "#301400",
+                    "surface-container-low": "#f1f4f5",
+                    "on-primary-fixed-variant": "#004f56",
+                    "surface-tint": "#006972",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed": "#ffdcc5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "section-gap": "40px",
+                    "gutter": "16px",
+                    "container-padding": "24px",
+                    "max-width-desktop": "1200px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter"],
+                    "display": ["Inter"],
+                    "body-md": ["Inter"],
+                    "title-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "display": ["44px", {"lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "title-md": ["18px", {"lineHeight": "24px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    }catch(_e){}</script></head><body class="bg-background min-h-screen pb-24">
+
+    <!-- TopAppBar -->
+    <header class="w-full top-0 sticky bg-surface z-40 transition-opacity">
+        <div class="flex justify-between items-center px-gutter py-4 w-full max-w-max-width-desktop mx-auto">
+            <div class="flex items-center gap-4">
+                <button class="text-primary hover:opacity-80 transition-opacity active:scale-95 transition-transform">
+                    <span class="material-symbols-outlined" data-icon="menu">menu</span>
+                </button>
+                <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight">SpendTrail</h1>
+            </div>
+            <button class="text-primary hover:opacity-80 transition-opacity active:scale-95 transition-transform">
+                <span class="material-symbols-outlined" data-icon="account_circle" data-original-icon="account_circle">account_circle</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-max-width-desktop mx-auto px-container-padding pt-8 md:pt-12">
+        
+        <!-- Summary Header -->
+        <section class="mb-section-gap flex flex-col items-center text-center">
+            <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-2">Total Monthly Spending</span>
+            <h2 class="font-display text-display text-primary">₹0.00</h2>
+            <p class="font-body-md text-body-md text-outline mt-2">October 2023</p>
+        </section>
+
+        <!-- Bento Grid Layout -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+            
+            <!-- Category Breakdown Placeholder -->
+            <div class="md:col-span-7 tonal-card rounded-xl p-8 flex flex-col items-center justify-center min-h-[320px] border border-outline/5">
+                <div class="mb-6 w-full flex justify-between items-center px-2">
+                    <h3 class="font-title-md text-title-md text-on-surface">Categories</h3>
+                    <span class="material-symbols-outlined text-outline" data-icon="pie_chart">pie_chart</span>
+                </div>
+                
+                <div class="flex-1 flex flex-col items-center justify-center space-y-4">
+                    <div class="w-32 h-32 rounded-full border-[12px] border-surface-container flex items-center justify-center relative">
+                         <div class="absolute inset-0 rounded-full border-[12px] border-primary/10 animate-pulse"></div>
+                         <span class="material-symbols-outlined text-outline-variant text-4xl" data-icon="category">category</span>
+                    </div>
+                    <div class="text-center">
+                        <h4 class="font-title-md text-title-md text-on-surface-variant">No data yet</h4>
+                        <p class="font-body-md text-body-md text-outline max-w-[240px] mx-auto mt-1">Add your first expense to see your category breakdown.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Budget Progress Placeholder -->
+            <div class="md:col-span-5 tonal-card rounded-xl p-8 flex flex-col border border-outline/5">
+                <h3 class="font-title-md text-title-md text-on-surface mb-8">Monthly Budgets</h3>
+                
+                <div class="space-y-8">
+                    <!-- Placeholder Bars -->
+                    <div class="space-y-2 opacity-40">
+                        <div class="flex justify-between text-label-sm font-label-sm text-on-surface-variant uppercase">
+                            <span class="">Groceries</span>
+                            <span class="">₹0 / ₹400</span>
+                        </div>
+                        <div class="w-full bg-surface-container-highest rounded-full h-2">
+                            <div class="bg-primary h-2 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="space-y-2 opacity-40">
+                        <div class="flex justify-between text-label-sm font-label-sm text-on-surface-variant uppercase">
+                            <span class="">Leisure</span>
+                            <span class="">₹0 / ₹250</span>
+                        </div>
+                        <div class="w-full bg-surface-container-highest rounded-full h-2">
+                            <div class="bg-primary h-2 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="space-y-2 opacity-40">
+                        <div class="flex justify-between text-label-sm font-label-sm text-on-surface-variant uppercase">
+                            <span class="">Travel</span>
+                            <span class="">₹0 / ₹150</span>
+                        </div>
+                        <div class="w-full bg-surface-container-highest rounded-full h-2">
+                            <div class="bg-primary h-2 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-auto pt-8">
+                    <button class="w-full py-3 border border-primary text-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest pill-button hover:bg-primary/5 active:scale-95">
+                        Set New Budget
+                    </button>
+                </div>
+            </div>
+
+            <!-- Recent Transactions Empty State -->
+            <div class="md:col-span-12 mt-4">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Recent Transactions</h3>
+                    <button class="font-label-sm text-label-sm text-primary uppercase tracking-widest hover:underline">View All</button>
+                </div>
+                
+                <div class="bg-surface-container-lowest rounded-xl p-12 border border-outline/5 text-center flex flex-col items-center justify-center soft-lift min-h-[280px]">
+                    <div class="w-20 h-20 bg-surface-container-low rounded-full flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-primary-container text-3xl" data-icon="receipt_long">receipt_long</span>
+                    </div>
+                    <h4 class="font-title-md text-title-md text-on-surface">Start tracking your spending</h4>
+                    <p class="font-body-md text-body-md text-outline max-w-sm mt-2">Your recent transactions will appear here once you begin adding your daily expenses.</p>
+                    
+                    <button class="mt-8 px-8 py-3 bg-primary text-on-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest pill-button hover:opacity-90 active:scale-95 shadow-sm">
+                        Add Expense
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Featured Insight Card (Empty State Context) -->
+        <div class="mt-section-gap mb-12">
+            <div class="relative overflow-hidden rounded-2xl bg-primary-container p-8 text-on-primary-container">
+                <div class="relative z-10 md:flex items-center justify-between">
+                    <div class="max-w-md">
+                        <h3 class="font-headline-lg-mobile text-headline-lg-mobile mb-4">Master your money</h3>
+                        <p class="font-body-lg text-body-lg opacity-90 mb-6">SpendTrail helps you visualize where every dollar goes with quiet, mindful tracking that focuses on your financial peace.</p>
+                        <div class="flex gap-4">
+                            <span class="flex items-center gap-2 font-label-sm text-label-sm">
+                                <span class="material-symbols-outlined text-sm" data-icon="check_circle">check_circle</span> No Ads
+                            </span>
+                            <span class="flex items-center gap-2 font-label-sm text-label-sm">
+                                <span class="material-symbols-outlined text-sm" data-icon="check_circle">check_circle</span> Private
+                            </span>
+                        </div>
+                    </div>
+                    <div class="hidden md:block">
+                         <div class="w-48 h-48 bg-on-primary-container/10 rounded-full flex items-center justify-center">
+                            <span class="material-symbols-outlined text-7xl opacity-50" data-icon="analytics">analytics</span>
+                         </div>
+                    </div>
+                </div>
+                <!-- Subtle background decoration -->
+                <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-on-primary-container/5 rounded-full blur-3xl"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Action Button -->
+    <button id="quick-add-fab" class="fixed bottom-24 right-6 md:right-12 w-16 h-16 bg-primary text-on-primary rounded-2xl flex items-center justify-center shadow-xl hover:scale-105 active:scale-90 transition-all z-50 group">
+        <span class="material-symbols-outlined text-3xl transition-transform group-hover:rotate-90" data-icon="add">add</span>
+    </button>
+
+    <!-- BottomNavBar -->
+    <nav class="fixed bottom-0 left-0 w-full h-16 flex justify-around items-center px-base pb-safe bg-surface-container-low z-50 rounded-t-xl shadow-sm">
+        <a href="#" class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 active:scale-90 transition-all duration-200">
+            <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+            <span class="font-label-sm text-label-sm">Dashboard</span>
+        </a>
+        <a href="#" class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-variant transition-colors active:scale-90 transition-all duration-200">
+            <span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+            <span class="font-label-sm text-label-sm">Transactions</span>
+        </a>
+        <a href="#" class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-variant transition-colors active:scale-90 transition-all duration-200">
+            <span class="material-symbols-outlined" data-icon="category">category</span>
+            <span class="font-label-sm text-label-sm">Categories</span>
+        </a>
+        <a href="#" class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-variant transition-colors active:scale-90 transition-all duration-200">
+            <span class="material-symbols-outlined" data-icon="settings">settings</span>
+            <span class="font-label-sm text-label-sm">Settings</span>
+        </a>
+    </nav>
+
+    <!-- Simple Quick Add Modal/Sheet Overlay -->
+    <div id="quick-add-sheet" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300">
+        <div class="absolute bottom-0 left-0 w-full bg-surface rounded-t-[32px] p-8 translate-y-full transition-transform duration-300">
+            <div class="w-12 h-1.5 bg-outline-variant rounded-full mx-auto mb-8"></div>
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">New Transaction</h3>
+                <button id="close-sheet" class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-full">
+                    <span class="material-symbols-outlined" data-icon="close">close</span>
+                </button>
+            </div>
+            
+            <div class="space-y-6">
+                <div>
+                    <label class="block font-label-sm text-label-sm text-outline uppercase tracking-widest mb-2">Amount</label>
+                    <input type="text" placeholder="₹0.00" class="w-full text-4xl font-bold bg-transparent border-none border-b border-outline focus:ring-0 focus:border-primary p-0 pb-2">
+                </div>
+                
+                <div>
+                    <label class="block font-label-sm text-label-sm text-outline uppercase tracking-widest mb-2">Description</label>
+                    <input type="text" placeholder="What was this for?" class="w-full font-body-lg text-body-lg bg-transparent border-none border-b border-outline-variant focus:ring-0 focus:border-primary p-0 pb-2">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 pt-4">
+                    <button class="py-4 bg-primary text-on-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:opacity-90 active:scale-95">Save Expense</button>
+                    <button class="py-4 border border-outline text-on-surface rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:bg-surface-variant active:scale-95">Add Details</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script class="">
+        const fab = document.getElementById('quick-add-fab');
+        const sheet = document.getElementById('quick-add-sheet');
+        const sheetContent = sheet.querySelector('div');
+        const closeSheet = document.getElementById('close-sheet');
+
+        fab.addEventListener('click', () => {
+            sheet.classList.remove('hidden');
+            setTimeout(() => {
+                sheet.classList.replace('opacity-0', 'opacity-100');
+                sheetContent.classList</script></body></html>
