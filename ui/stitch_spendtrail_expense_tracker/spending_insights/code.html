@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>SpendTrail Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Montserrat:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e4e2e1",
+                        "on-secondary-fixed": "#00201e",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#f0eded",
+                        "background": "#fcf9f8",
+                        "tertiary-container": "#915239",
+                        "on-tertiary-fixed": "#380d00",
+                        "primary": "#00535b",
+                        "surface-bright": "#fcf9f8",
+                        "surface-dim": "#dcd9d9",
+                        "on-tertiary-fixed-variant": "#6f3720",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#001f23",
+                        "on-secondary-container": "#286d67",
+                        "inverse-surface": "#303030",
+                        "surface-tint": "#006972",
+                        "on-tertiary-container": "#ffd7c9",
+                        "surface-container-high": "#eae7e7",
+                        "outline": "#6f797a",
+                        "on-background": "#1b1c1c",
+                        "primary-fixed-dim": "#82d3de",
+                        "secondary-fixed": "#acefe7",
+                        "secondary-container": "#a9ece5",
+                        "tertiary-fixed": "#ffdbce",
+                        "on-secondary-fixed-variant": "#00504b",
+                        "on-primary-fixed-variant": "#004f56",
+                        "inverse-primary": "#82d3de",
+                        "inverse-on-surface": "#f3f0f0",
+                        "tertiary": "#743b24",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#90d3cb",
+                        "outline-variant": "#bec8ca",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#1b1c1c",
+                        "on-primary-container": "#9becf7",
+                        "primary-fixed": "#9ff0fb",
+                        "surface": "#fcf9f8",
+                        "error-container": "#ffdad6",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e4e2e1",
+                        "surface-container-low": "#f6f3f2",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#3e494a",
+                        "tertiary-fixed-dim": "#ffb59a",
+                        "secondary": "#236863",
+                        "primary-container": "#006d77"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "sm": "8px",
+                        "gutter-mobile": "12px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "unit": "4px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-sm": ["Montserrat"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Montserrat"],
+                        "headline-lg-mobile": ["Montserrat"],
+                        "body-lg": ["Inter"],
+                        "display-currency": ["Montserrat"],
+                        "headline-lg": ["Montserrat"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.5px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display-currency": ["40px", { "lineHeight": "48px", "letterSpacing": "-1px", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(111, 121, 122, 0.1);
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col items-center">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-background dark:bg-background z-40">
+<div class="flex items-center justify-between px-margin-mobile py-sm w-full max-w-screen-md mx-auto">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A portrait of an Indian college student smiling warmly. The photo is well-lit, featuring soft, natural daylight against a clean, minimalist cream-colored background. The student wears casual, modern clothing typical of a university campus. The overall mood is approachable, friendly, and authentic, aligning with a personal notebook aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNW3RHLJHJorTTQrNnDO7Dd-WJAJzDsPyt5VV2el48creYlZjtFi2b9G8UoQn-SDQQfruPRmcViwkWflUdXhWv_L5l7mQS7wOcupf2k6G3a1LauH3dm61ASlYbKiCZ_SR8AYXz1Ry9ciSsOU5Te-EHGUnrGsgCaNNQUB5vGr0liIC1K9BOii7SX-_5_IT04NNsaVs6PAIl1V0oTyOIMBHyJX20G4klOXBG3AuJo4XGBY3adpYXwrbkMw"/>
+</div>
+</div>
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">
+                SpendTrail
+            </div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:opacity-80 active:scale-95 transition-transform text-primary dark:text-primary-fixed-dim">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</button>
+</div>
+</header>
+<main class="w-full max-w-screen-md px-margin-mobile pt-lg pb-32 flex-1 flex flex-col gap-lg">
+<!-- Header & Filter -->
+<div class="flex items-center justify-between">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary">Insights</h1>
+<div class="relative">
+<select class="appearance-none bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-2 pr-8 font-label-md text-label-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20">
+<option>This Month</option>
+<option>Last Month</option>
+<option>Last 3 Months</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" style="font-size: 20px;">expand_more</span>
+</div>
+</div>
+<!-- Total Spend Overview -->
+<section class="glass-card rounded-2xl p-lg flex flex-col items-center justify-center text-center shadow-[0_4px_20px_rgba(0,109,119,0.05)]">
+<p class="font-label-md text-label-md text-on-surface-variant mb-1">Total Spent</p>
+<h2 class="font-display-currency text-display-currency text-primary">₹14,250</h2>
+<div class="mt-3 inline-flex items-center gap-1 bg-error-container/50 text-error px-3 py-1 rounded-full font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+<span>+12% vs last month</span>
+</div>
+</section>
+<!-- Spending Breakdown -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Donut Chart Card -->
+<div class="glass-card rounded-2xl p-md flex flex-col shadow-[0_4px_20px_rgba(0,109,119,0.05)]">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-md">Breakdown</h3>
+<div class="relative w-full aspect-square max-w-[200px] mx-auto">
+<canvas id="breakdownChart"></canvas>
+<div class="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
+<span class="material-symbols-outlined text-primary/30" style="font-size: 40px;">pie_chart</span>
+</div>
+</div>
+</div>
+<!-- Categories List -->
+<div class="glass-card rounded-2xl p-md flex flex-col shadow-[0_4px_20px_rgba(0,109,119,0.05)]">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-md">Categories</h3>
+<div class="flex flex-col gap-sm">
+<!-- Food Item -->
+<div class="flex items-center justify-between p-2 hover:bg-surface-container-low rounded-lg transition-colors cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined">restaurant</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Food &amp; Dining</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">40% of total</p>
+</div>
+</div>
+<p class="font-headline-sm text-headline-sm text-on-surface">₹5,700</p>
+</div>
+<!-- Travel Item -->
+<div class="flex items-center justify-between p-2 hover:bg-surface-container-low rounded-lg transition-colors cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container/50 text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined">commute</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Travel</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">25% of total</p>
+</div>
+</div>
+<p class="font-headline-sm text-headline-sm text-on-surface">₹3,562</p>
+</div>
+<!-- Shopping Item -->
+<div class="flex items-center justify-between p-2 hover:bg-surface-container-low rounded-lg transition-colors cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-tertiary-container/20 text-tertiary flex items-center justify-center">
+<span class="material-symbols-outlined">shopping_bag</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Shopping</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">15% of total</p>
+</div>
+</div>
+<p class="font-headline-sm text-headline-sm text-on-surface">₹2,137</p>
+</div>
+<!-- Bills Item -->
+<div class="flex items-center justify-between p-2 hover:bg-surface-container-low rounded-lg transition-colors cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined">receipt</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Bills &amp; Utilities</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">20% of total</p>
+</div>
+</div>
+<p class="font-headline-sm text-headline-sm text-on-surface">₹2,850</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Daily Trend Bar Chart -->
+<section class="glass-card rounded-2xl p-md flex flex-col shadow-[0_4px_20px_rgba(0,109,119,0.05)]">
+<div class="flex items-center justify-between mb-md">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Daily Trend</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Last 30 days</span>
+</div>
+<div class="w-full h-48 relative">
+<canvas id="trendChart"></canvas>
+</div>
+</section>
+<!-- Empty State Example (Hidden by default, shown for reference if data is empty) -->
+<section class="hidden glass-card rounded-2xl p-xl flex flex-col items-center justify-center text-center shadow-[0_4px_20px_rgba(0,109,119,0.05)] border-dashed border-2 border-outline-variant/30">
+<div class="w-24 h-24 mb-4 text-outline-variant">
+<span class="material-symbols-outlined" style="font-size: 96px;">monitoring</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">No Data Yet</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 max-w-[250px]">Start tracking your expenses to see your spending patterns and insights here!</p>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-6 py-3 rounded-xl hover:opacity-90 active:scale-98 transition-all">
+                Add First Expense
+            </button>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full rounded-t-xl z-50 bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant/10 shadow-[0_-4px_20px_rgba(0,109,119,0.08)] md:hidden">
+<div class="flex justify-around items-center px-4 py-2 pb-safe max-w-screen-md mx-auto w-full">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:bg-surface-variant/50 active:scale-98 transition-all duration-200 rounded-xl" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-primary-container text-on-secondary-container dark:text-on-primary-container rounded-xl px-4 py-1 hover:bg-surface-variant/50 active:scale-98 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">insights</span>
+<span class="font-label-sm text-label-sm">Analytics</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:bg-surface-variant/50 active:scale-98 transition-all duration-200 rounded-xl" href="#">
+<span class="material-symbols-outlined mb-1">receipt_long</span>
+<span class="font-label-sm text-label-sm">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:bg-surface-variant/50 active:scale-98 transition-all duration-200 rounded-xl" href="#">
+<span class="material-symbols-outlined mb-1">settings</span>
+<span class="font-label-sm text-label-sm">Settings</span>
+</a>
+</div>
+</nav>
+<!-- Desktop Side Nav Spacer (if implemented as side nav on md+ screens) -->
+<div class="hidden md:flex fixed top-0 left-0 h-full w-64 border-r border-outline-variant/10 bg-surface-container-lowest flex-col p-lg pointer-events-none opacity-0">
+<!-- Placeholder for desktop nav structure to ensure layout logic matches intent -->
+</div>
+<script>
+        // Chart.js Configuration
+        document.addEventListener('DOMContentLoaded', function() {
+            // Colors from Tailwind config
+            const colors = {
+                primary: '#00535b',
+                primaryLight: 'rgba(0, 83, 91, 0.6)',
+                secondary: '#236863',
+                tertiary: '#743b24',
+                surfaceVariant: '#e4e2e1',
+                outlineVariant: '#bec8ca'
+            };
+
+            // Donut Chart
+            const ctxDonut = document.getElementById('breakdownChart').getContext('2d');
+            new Chart(ctxDonut, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Food', 'Travel', 'Bills', 'Shopping'],
+                    datasets: [{
+                        data: [40, 25, 20, 15],
+                        backgroundColor: [
+                            colors.primary,
+                            '#a9ece5', // secondary-container
+                            colors.surfaceVariant,
+                            '#ffd7c9' // tertiary-container
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1b1c1c',
+                            titleFont: { family: 'Inter', size: 12 },
+                            bodyFont: { family: 'Inter', size: 14, weight: 'bold' },
+                            padding: 10,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Bar Chart (Daily Trend)
+            const ctxBar = document.getElementById('trendChart').getContext('2d');
+            
+            // Generate dummy data for 30 days
+            const labels = Array.from({length: 30}, (_, i) => `${i+1}`);
+            const data = Array.from({length: 30}, () => Math.floor(Math.random() * 1000) + 100);
+
+            new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Daily Spend',
+                        data: data,
+                        backgroundColor: colors.primaryLight,
+                        hoverBackgroundColor: colors.primary,
+                        borderRadius: 4,
+                        borderSkipped: false,
+                        barPercentage: 0.6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            display: false,
+                            beginAtZero: true
+                        },
+                        x: {
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                maxTicksLimit: 5,
+                                color: '#6f797a',
+                                font: {
+                                    family: 'Inter',
+                                    size: 10
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1b1c1c',
+                            titleFont: { family: 'Inter', size: 10 },
+                            bodyFont: { family: 'Inter', size: 14, weight: 'bold' },
+                            padding: 8,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            callbacks: {
+                                title: function() { return ''; },
+                                label: function(context) {
+                                    return '₹' + context.parsed.y;
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    }
+                }
+            });
+        });
+    </script>
+</body></html>

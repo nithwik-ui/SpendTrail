@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Add Expense - SpendTrail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Montserrat:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-variant": "#e4e2e1",
+                        "on-secondary-fixed": "#00201e",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#f0eded",
+                        "background": "#fcf9f8",
+                        "tertiary-container": "#915239",
+                        "on-tertiary-fixed": "#380d00",
+                        "primary": "#00535b",
+                        "surface-bright": "#fcf9f8",
+                        "surface-dim": "#dcd9d9",
+                        "on-tertiary-fixed-variant": "#6f3720",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#001f23",
+                        "on-secondary-container": "#286d67",
+                        "inverse-surface": "#303030",
+                        "surface-tint": "#006972",
+                        "on-tertiary-container": "#ffd7c9",
+                        "surface-container-high": "#eae7e7",
+                        "outline": "#6f797a",
+                        "on-background": "#1b1c1c",
+                        "primary-fixed-dim": "#82d3de",
+                        "secondary-fixed": "#acefe7",
+                        "secondary-container": "#a9ece5",
+                        "tertiary-fixed": "#ffdbce",
+                        "on-secondary-fixed-variant": "#00504b",
+                        "on-primary-fixed-variant": "#004f56",
+                        "inverse-primary": "#82d3de",
+                        "inverse-on-surface": "#f3f0f0",
+                        "tertiary": "#743b24",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#90d3cb",
+                        "outline-variant": "#bec8ca",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#1b1c1c",
+                        "on-primary-container": "#9becf7",
+                        "primary-fixed": "#9ff0fb",
+                        "surface": "#fcf9f8",
+                        "error-container": "#ffdad6",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e4e2e1",
+                        "surface-container-low": "#f6f3f2",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#3e494a",
+                        "tertiary-fixed-dim": "#ffb59a",
+                        "secondary": "#236863",
+                        "primary-container": "#006d77"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "margin-mobile": "20px",
+                        "sm": "8px",
+                        "gutter-mobile": "12px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "unit": "4px",
+                        "md": "16px",
+                        "safe": "env(safe-area-inset-bottom, 24px)"
+                    },
+                    fontFamily: {
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-sm": ["Montserrat"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Montserrat"],
+                        "headline-lg-mobile": ["Montserrat"],
+                        "body-lg": ["Inter"],
+                        "display-currency": ["Montserrat"],
+                        "headline-lg": ["Montserrat"]
+                    },
+                    fontSize: {
+                        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "label-sm": ["12px", { lineHeight: "16px", fontWeight: "500" }],
+                        "headline-sm": ["20px", { lineHeight: "28px", fontWeight: "600" }],
+                        "label-md": ["14px", { lineHeight: "20px", letterSpacing: "0.5px", fontWeight: "500" }],
+                        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+                        "headline-lg-mobile": ["28px", { lineHeight: "36px", fontWeight: "700" }],
+                        "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+                        "display-currency": ["64px", { lineHeight: "72px", letterSpacing: "-2px", fontWeight: "700" }],
+                        "headline-lg": ["32px", { lineHeight: "40px", fontWeight: "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Subtle fade in for amount changes */
+        @keyframes pulse-amount {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        .amount-changed { animation: pulse-amount 0.15s ease-out; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background h-screen flex flex-col font-body-md overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- Container restricted width for desktop testing, full for mobile -->
+<main class="w-full max-w-md mx-auto h-full flex flex-col relative shadow-[0_0_40px_rgba(0,109,119,0.05)] bg-background">
+<!-- Top App Bar (Task-Focused / Close) -->
+<!-- Logic: Suppressing BottomNav/Global TopAppBar as this is a transactional flow -->
+<header class="flex items-center justify-between px-margin-mobile py-md flex-shrink-0 z-10">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-variant active:scale-95 transition-all" onclick="window.history.back()">
+<span class="material-symbols-outlined text-[24px]">close</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm text-on-background">New Expense</h1>
+<div class="w-10"></div> <!-- Spacer -->
+</header>
+<!-- Amount Display Canvas -->
+<section class="flex flex-col items-center justify-center py-xl px-margin-mobile flex-shrink-0">
+<div class="flex items-center justify-center gap-xs w-full overflow-hidden px-4">
+<span class="font-headline-md text-headline-md text-on-surface-variant self-start mt-4">₹</span>
+<span class="font-display-currency text-display-currency text-on-background tracking-tighter truncate max-w-[80%]" id="amount-value">0</span>
+</div>
+<button class="mt-sm flex items-center gap-xs px-md py-xs rounded-full bg-surface-container-low text-on-surface-variant font-label-md text-label-md hover:bg-surface-variant active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                Today
+            </button>
+</section>
+<!-- Details Canvas -->
+<section class="flex-grow flex flex-col px-margin-mobile gap-xl overflow-y-auto pb-4 pt-sm">
+<!-- Category Picker -->
+<div class="flex flex-col gap-md">
+<div class="flex gap-4 overflow-x-auto pb-2 scrollbar-hide px-1" id="category-picker">
+<!-- Food (Active Default) -->
+<button class="category-btn flex flex-col items-center gap-2 min-w-[64px] group" data-category="food">
+<div class="icon-bg w-14 h-14 rounded-full bg-primary flex items-center justify-center text-on-primary transition-all group-active:scale-95 shadow-[0_4px_12px_rgba(0,83,91,0.2)]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-background transition-colors">Food</span>
+</button>
+<!-- Travel -->
+<button class="category-btn flex flex-col items-center gap-2 min-w-[64px] group" data-category="travel">
+<div class="icon-bg w-14 h-14 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-all group-active:scale-95">
+<span class="material-symbols-outlined">directions_car</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant transition-colors">Travel</span>
+</button>
+<!-- Hostel -->
+<button class="category-btn flex flex-col items-center gap-2 min-w-[64px] group" data-category="hostel">
+<div class="icon-bg w-14 h-14 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-all group-active:scale-95">
+<span class="material-symbols-outlined">bed</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant transition-colors">Hostel</span>
+</button>
+<!-- Shopping -->
+<button class="category-btn flex flex-col items-center gap-2 min-w-[64px] group" data-category="shopping">
+<div class="icon-bg w-14 h-14 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-all group-active:scale-95">
+<span class="material-symbols-outlined">shopping_bag</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant transition-colors">Shopping</span>
+</button>
+<!-- Other -->
+<button class="category-btn flex flex-col items-center gap-2 min-w-[64px] group" data-category="other">
+<div class="icon-bg w-14 h-14 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-all group-active:scale-95">
+<span class="material-symbols-outlined">more_horiz</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant transition-colors">Other</span>
+</button>
+</div>
+</div>
+<!-- Note Input -->
+<div class="flex flex-col mt-sm">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-0 text-on-surface-variant/50 text-[20px]">edit_note</span>
+<input class="w-full bg-transparent border-0 border-b border-outline-variant/30 text-on-background font-body-lg text-body-lg py-3 pl-8 pr-0 focus:ring-0 focus:border-primary placeholder:text-on-surface-variant/50 transition-colors" placeholder="What was this for?" type="text"/>
+</div>
+</div>
+</section>
+<!-- Numpad & Action Shell -->
+<section class="bg-surface-container-lowest rounded-t-[32px] pt-md pb-[max(env(safe-area-inset-bottom),24px)] px-margin-mobile flex flex-col gap-md shadow-[0_-10px_40px_rgba(0,109,119,0.06)] z-20">
+<!-- Numpad Grid -->
+<div class="grid grid-cols-3 gap-y-2 gap-x-2 w-full px-4" id="numpad">
+<button class="num-btn font-headline-md text-headline-md text-on-background py-3 rounded-xl hover:bg-surface-container-low active:bg-surface-container-high transition-colors">1</button>
+<button class="num-btn font-headline-md text-headline-md text-on-background py-3 rounded-xl hover:bg-surface-container-low active:bg-surface-container-high transition-colors">2</button>
+<button class="num-btn font-headline-md text-headline-md text-on-background py-3 rounded-xl hover:bg-surface-container-low active:bg-surface-container-high transition-colors">3</button>
+<button class="num-btn font-headline-md text-headline-md text-on-background py-3 rounded-xl hover:bg-surface-container-low active:bg-surface-container-high transition-colors">4</button>
+<button class="num-btn font-headline-md text-headline-md text-on-background py-3 rounded-xl hover:bg-surface-container-low active:bg-surface-container-high transition-colors">5</button>
+<button class="num-btn font-headline-md text-headline-md text-on-background py-3 rounded-xl hover:bg-surface-container-low active:bg-surface-container-high transition-colors">6</button>
+<button class="num-btn font-headline-md text-headline-md text-on-background py-3 rounded-xl hover:bg-surface-container-low active:bg-surface-container-high transition-colors">7</button>
+<button class="num-btn font-headline-md text-headline-md text-on-background py-3 rounded-xl hover:bg-surface-container-low active:bg-surface-container-high transition-colors">8</button>
+<button class="num-btn font-headline-md text-headline-md text-on-background py-3 rounded-xl hover:bg-surface-container-low active:bg-surface-container-high transition-colors">9</button>
+<button class="num-btn font-headline-md text-headline-md text-on-background py-3 rounded-xl hover:bg-surface-container-low active:bg-surface-container-high transition-colors">.</button>
+<button class="num-btn font-headline-md text-headline-md text-on-background py-3 rounded-xl hover:bg-surface-container-low active:bg-surface-container-high transition-colors">0</button>
+<button class="flex items-center justify-center py-3 rounded-xl hover:bg-surface-container-low active:bg-surface-container-high transition-colors text-on-surface-variant" id="btn-backspace">
+<span class="material-symbols-outlined text-[28px]">backspace</span>
+</button>
+</div>
+<!-- Primary Action -->
+<button class="w-full bg-primary text-on-primary font-headline-sm text-headline-sm py-4 mt-2 rounded-full flex items-center justify-center gap-2 active:scale-[0.98] transition-transform shadow-[0_4px_20px_rgba(0,83,91,0.25)] hover:shadow-[0_6px_24px_rgba(0,83,91,0.3)]">
+                Save Expense
+                <span class="material-symbols-outlined text-[20px]">check</span>
+</button>
+</section>
+</main>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Amount Input Logic
+            const amountDisplay = document.getElementById('amount-value');
+            const numBtns = document.querySelectorAll('.num-btn');
+            const backspaceBtn = document.getElementById('btn-backspace');
+            let currentAmount = '0';
+
+            const updateDisplay = () => {
+                amountDisplay.textContent = currentAmount;
+                // Trigger animation
+                amountDisplay.classList.remove('amount-changed');
+                void amountDisplay.offsetWidth; // trigger reflow
+                amountDisplay.classList.add('amount-changed');
+            };
+
+            numBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const val = e.target.textContent;
+                    
+                    if (val === '.' && currentAmount.includes('.')) return;
+                    
+                    if (currentAmount === '0' && val !== '.') {
+                        currentAmount = val;
+                    } else {
+                        // Limit length to prevent overflow
+                        if(currentAmount.length < 8) {
+                            currentAmount += val;
+                        }
+                    }
+                    updateDisplay();
+                });
+            });
+
+            backspaceBtn.addEventListener('click', () => {
+                if (currentAmount.length > 1) {
+                    currentAmount = currentAmount.slice(0, -1);
+                } else {
+                    currentAmount = '0';
+                }
+                updateDisplay();
+            });
+
+            // Category Picker Logic
+            const categoryBtns = document.querySelectorAll('.category-btn');
+            
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Reset all
+                    categoryBtns.forEach(b => {
+                        const iconBg = b.querySelector('.icon-bg');
+                        const text = b.querySelector('span:last-child');
+                        const icon = b.querySelector('.material-symbols-outlined');
+                        
+                        iconBg.className = 'icon-bg w-14 h-14 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-all group-active:scale-95';
+                        text.className = 'font-label-sm text-label-sm text-on-surface-variant transition-colors';
+                        icon.style.fontVariationSettings = "'FILL' 0";
+                    });
+
+                    // Set active
+                    const activeIconBg = btn.querySelector('.icon-bg');
+                    const activeText = btn.querySelector('span:last-child');
+                    const activeIcon = btn.querySelector('.material-symbols-outlined');
+                    
+                    activeIconBg.className = 'icon-bg w-14 h-14 rounded-full bg-primary flex items-center justify-center text-on-primary transition-all group-active:scale-95 shadow-[0_4px_12px_rgba(0,83,91,0.2)]';
+                    activeText.className = 'font-label-sm text-label-sm text-on-background transition-colors';
+                    activeIcon.style.fontVariationSettings = "'FILL' 1";
+                });
+            });
+        });
+    </script>
+</body></html>
