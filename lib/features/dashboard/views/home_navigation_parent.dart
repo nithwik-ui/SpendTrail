@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../config/constants.dart';
+import '../../../core/services/volume_shortcut_service.dart';
+import '../../add_expense/views/add_expense_sheet.dart';
 import 'dashboard_screen.dart';
 import '../../history/views/history_screen.dart';
 import '../../settings/views/settings_screen.dart';
@@ -22,6 +24,43 @@ class _HomeNavigationParentState extends State<HomeNavigationParent> {
     const HistoryScreen(),
     const SettingsScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize volume shortcut listener
+    VolumeShortcutService.onQuickAddRequested = _openQuickAddSheet;
+
+    // Check if there was a pending quick-add from before Flutter was ready
+    _checkPendingQuickAdd();
+  }
+
+  Future<void> _checkPendingQuickAdd() async {
+    final pending = await VolumeShortcutService.checkPendingQuickAdd();
+    if (pending && mounted) {
+      // Small delay to ensure the widget tree is built
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (mounted) _openQuickAddSheet();
+      });
+    }
+  }
+
+  void _openQuickAddSheet() {
+    if (!mounted) return;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const AddExpenseSheet(),
+    );
+  }
+
+  @override
+  void dispose() {
+    VolumeShortcutService.onQuickAddRequested = null;
+    super.dispose();
+  }
 
   void _onTabTapped(int index) {
     if (_currentIndex == index) return;
@@ -91,7 +130,7 @@ class _HomeNavigationParentState extends State<HomeNavigationParent> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
               decoration: BoxDecoration(
                 color: isSelected ? AppColors.secondaryContainer.withOpacity(0.4) : Colors.transparent,
-                borderRadius: BorderRadius.circular(16.0), // rounded-lg
+                borderRadius: BorderRadius.circular(16.0),
               ),
               child: Icon(
                 icon,
@@ -115,5 +154,3 @@ class _HomeNavigationParentState extends State<HomeNavigationParent> {
     );
   }
 }
-
-

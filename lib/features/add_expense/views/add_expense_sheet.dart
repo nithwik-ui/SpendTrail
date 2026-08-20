@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/constants.dart';
 import '../../../core/models/expense.dart';
 import '../../../core/providers/expense_provider.dart';
+import '../../../core/services/volume_shortcut_service.dart';
 
 class AddExpenseSheet extends ConsumerStatefulWidget {
   const AddExpenseSheet({super.key});
@@ -73,6 +74,9 @@ class _AddExpenseSheetState extends ConsumerState<AddExpenseSheet> {
     ref.read(expenseProvider.notifier).addExpense(newExpense);
 
     Navigator.of(context).pop();
+    
+    // If launched via volume shortcut from background, return to previous app
+    VolumeShortcutService.moveTaskToBack();
   }
 
   Future<void> _selectDate() async {

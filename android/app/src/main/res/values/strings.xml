@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_service_description">SpendTrail uses this service only to detect a long-press on the Volume Down button as a quick shortcut to add an expense. No other data is read or collected.</string>
+</resources>

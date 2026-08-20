@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class UpdateInfo {
   final String version;
@@ -44,18 +45,43 @@ class UpdateState {
 
 class UpdateService extends StateNotifier<UpdateState> {
   static const _channel = MethodChannel('com.spendtrail.spendtrail/updater');
-  static const _currentVersion = 'v1.0.4';
 
   UpdateService() : super(const UpdateState());
 
-  // Check GitHub API for updates
+  /// Parse a version tag like "v1.0.5" into [major, minor, patch]
+  List<int> _parseVersion(String tag) {
+    final cleaned = tag.replaceFirst(RegExp(r'^v'), '');
+    final parts = cleaned.split('.');
+    return [
+      int.tryParse(parts.isNotEmpty ? parts[0] : '0') ?? 0,
+      int.tryParse(parts.length > 1 ? parts[1] : '0') ?? 0,
+      int.tryParse(parts.length > 2 ? parts[2] : '0') ?? 0,
+    ];
+  }
+
+  /// Returns true if remoteTag is strictly newer than localTag
+  bool _isNewer(String remoteTag, String localTag) {
+    final remote = _parseVersion(remoteTag);
+    final local = _parseVersion(localTag);
+    for (int i = 0; i < 3; i++) {
+      if (remote[i] > local[i]) return true;
+      if (remote[i] < local[i]) return false;
+    }
+    return false; // equal
+  }
+
+  /// Check GitHub API for updates
   Future<UpdateInfo?> checkForUpdates() async {
     state = const UpdateState(isChecking: true);
     try {
+      // Get current installed version dynamically
+      final packageInfo = await PackageInfo.fromPlatform();
+      final currentVersion = 'v${packageInfo.version}';
+
       final client = HttpClient();
       client.connectionTimeout = const Duration(seconds: 10);
       
-      final url = Uri.parse('https://api.github.com/repos/Nithwik/spendtrail/releases/latest');
+      final url = Uri.parse('https://api.github.com/repos/nithwik-ui/SpendTrail/releases/latest');
       final request = await client.getUrl(url);
       request.headers.add('User-Agent', 'SpendTrail-Updater');
       
@@ -66,8 +92,8 @@ class UpdateService extends StateNotifier<UpdateState> {
         final tagName = data['tag_name'] as String? ?? '';
         final assets = data['assets'] as List? ?? [];
 
-        // Compare tag names (e.g. v1.0.5 vs v1.0.4)
-        if (tagName.isNotEmpty && tagName != _currentVersion) {
+        // Compare version tags using semantic versioning
+        if (tagName.isNotEmpty && _isNewer(tagName, currentVersion)) {
           final apkAsset = assets.firstWhere(
             (asset) => (asset['name'] as String? ?? '').endsWith('.apk'),
             orElse: () => null,
@@ -89,7 +115,7 @@ class UpdateService extends StateNotifier<UpdateState> {
     }
   }
 
-  // Download and trigger installation of APK
+  /// Download and trigger installation of APK
   Future<bool> downloadAndInstallUpdate(UpdateInfo info) async {
     state = state.copyWith(isDownloading: true, downloadProgress: '0%', errorMessage: null);
     try {
@@ -111,9 +137,9 @@ class UpdateService extends StateNotifier<UpdateState> {
       final contentLength = response.contentLength;
       int downloaded = 0;
 
-      final iosSink = apkFile.openWrite();
+      final sink = apkFile.openWrite();
       await response.forEach((chunk) {
-        iosSink.add(chunk);
+        sink.add(chunk);
         downloaded += chunk.length;
         if (contentLength > 0) {
           final progress = ((downloaded / contentLength) * 100).toStringAsFixed(0);
@@ -121,8 +147,8 @@ class UpdateService extends StateNotifier<UpdateState> {
         }
       });
 
-      await iosSink.flush();
-      await iosSink.close();
+      await sink.flush();
+      await sink.close();
 
       state = state.copyWith(downloadProgress: 'Launching installer...');
 

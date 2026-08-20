@@ -15,57 +15,54 @@ class SpendTrailHeader extends ConsumerWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
+    // Only watch the specific fields we need to avoid unnecessary rebuilds
+    final profilePath = ref.watch(settingsProvider.select((s) => s.profileImagePath));
+    final userName = ref.watch(settingsProvider.select((s) => s.userName));
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final primaryColor = isDark ? AppColors.primaryContainer : AppColors.primary;
 
-    // Load correct avatar widget based on storage source and platform
+    // Build avatar with cached ImageProvider for performance
     Widget avatarWidget;
-    if (settings.profileImagePath != null) {
+    if (profilePath != null) {
+      final ImageProvider imageProvider;
       if (kIsWeb) {
-        avatarWidget = Image.network(
-          settings.profileImagePath!,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => Icon(Icons.person_rounded, color: primaryColor),
-        );
+        imageProvider = NetworkImage(profilePath);
       } else {
-        avatarWidget = Image.file(
-          File(settings.profileImagePath!),
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => Icon(Icons.person_rounded, color: primaryColor),
-        );
+        imageProvider = FileImage(File(profilePath));
       }
-    } else {
-      avatarWidget = Image.network(
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuBV9SiIbAVhoEIpUpSv3tnECcSDAtOQslvJFM7ssbVkdNNxvZpfa_ZPocuSoZAZsm0cE7vf8392Zgm-UU2kbibo0vP9ZNlthKH_gwM21duCPOTz_zI0HsdYK7z1l7d2BPXnl52QDIJUkXwbiqaE1nshoOrqv7ZIxMRO9QbqqVFCAQFiCrNbRYrQ4RyhEL3VBKmG654zfWSyWA85Q3nyTEIZXWGZcdYrlVEfWbtHilrBs997KjDtSp-mVQ',
+      avatarWidget = Image(
+        image: imageProvider,
         fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => Icon(Icons.person_rounded, color: primaryColor),
+        // Cache frames to avoid re-decoding on rebuilds
+        gaplessPlayback: true,
+        errorBuilder: (context, error, stackTrace) =>
+            _buildInitialsAvatar(userName, primaryColor, isDark),
       );
+    } else {
+      avatarWidget = _buildInitialsAvatar(userName, primaryColor, isDark);
     }
 
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
       automaticallyImplyLeading: false,
-      // Left-aligned circular image avatar in leading position
       leading: Padding(
         padding: const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 8.0),
         child: Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
-              color: isDark ? const Color(0xFF334155) : AppColors.outlineVariant.withOpacity(0.2),
+              color: isDark
+                  ? const Color(0xFF334155)
+                  : AppColors.outlineVariant.withOpacity(0.2),
               width: 1.0,
             ),
           ),
-          child: ClipOval(
-            child: avatarWidget,
-          ),
+          child: ClipOval(child: avatarWidget),
         ),
       ),
       leadingWidth: 56.0,
-      // Center the title "SpendTrail" in primary color Montserrat
       centerTitle: true,
       title: Text(
         'SpendTrail',
@@ -87,6 +84,32 @@ class SpendTrailHeader extends ConsumerWidget implements PreferredSizeWidget {
         ),
       ],
     );
+  }
+
+  /// Build initials-based avatar fallback (no network call!)
+  Widget _buildInitialsAvatar(String userName, Color primaryColor, bool isDark) {
+    final initials = _getInitials(userName);
+    return Container(
+      color: isDark ? const Color(0xFF1A2A2C) : AppColors.primaryContainer.withOpacity(0.5),
+      alignment: Alignment.center,
+      child: Text(
+        initials,
+        style: TextStyle(
+          color: primaryColor,
+          fontWeight: FontWeight.bold,
+          fontSize: 14.0,
+        ),
+      ),
+    );
+  }
+
+  String _getInitials(String name) {
+    if (name.trim().isEmpty) return 'U';
+    final parts = name.trim().split(RegExp(r'\s+'));
+    if (parts.length > 1) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+    return parts[0][0].toUpperCase();
   }
 
   @override

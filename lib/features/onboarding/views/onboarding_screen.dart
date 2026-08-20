@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 import '../../../config/constants.dart';
 import '../../../core/providers/settings_provider.dart';
 import '../../dashboard/views/home_navigation_parent.dart';
@@ -29,18 +30,42 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       final picker = ImagePicker();
       final XFile? image = await picker.pickImage(
         source: ImageSource.gallery,
-        maxWidth: 400,
-        maxHeight: 400,
+        maxWidth: 800,
+        maxHeight: 800,
       );
       if (image != null) {
-        setState(() {
-          _pickedImagePath = image.path;
-        });
+        // Open crop tool with 1:1 square ratio
+        final croppedFile = await ImageCropper().cropImage(
+          sourcePath: image.path,
+          aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+          uiSettings: [
+            AndroidUiSettings(
+              toolbarTitle: 'Crop Profile Photo',
+              toolbarColor: AppColors.primary,
+              toolbarWidgetColor: Colors.white,
+              activeControlsWidgetColor: AppColors.primary,
+              lockAspectRatio: true,
+              hideBottomControls: false,
+            ),
+            IOSUiSettings(
+              title: 'Crop Profile Photo',
+              aspectRatioLockEnabled: true,
+              resetAspectRatioEnabled: false,
+            ),
+          ],
+        );
+        if (croppedFile != null) {
+          setState(() {
+            _pickedImagePath = croppedFile.path;
+          });
+        }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to pick profile photo')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to pick profile photo')),
+        );
+      }
     }
   }
 

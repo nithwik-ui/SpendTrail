@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:csv/csv.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 import '../../../config/constants.dart';
 import '../../../core/database/db_helper.dart';
@@ -22,6 +23,7 @@ import '../../../core/utils/backup_helper_stub.dart'
     if (dart.library.html) '../../../core/utils/backup_helper_web.dart'
     if (dart.library.io) '../../../core/utils/backup_helper_mobile.dart';
 import '../../../core/services/update_service.dart';
+import '../../../core/services/volume_shortcut_service.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -88,19 +90,45 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       final picker = ImagePicker();
       final XFile? image = await picker.pickImage(
         source: ImageSource.gallery,
-        maxWidth: 400,
-        maxHeight: 400,
+        maxWidth: 800,
+        maxHeight: 800,
       );
       if (image != null) {
-        ref.read(settingsProvider.notifier).updateProfilePhoto(image.path);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile picture updated!')),
+        // Open crop tool with 1:1 square ratio
+        final croppedFile = await ImageCropper().cropImage(
+          sourcePath: image.path,
+          aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+          uiSettings: [
+            AndroidUiSettings(
+              toolbarTitle: 'Crop Profile Photo',
+              toolbarColor: AppColors.primary,
+              toolbarWidgetColor: Colors.white,
+              activeControlsWidgetColor: AppColors.primary,
+              lockAspectRatio: true,
+              hideBottomControls: false,
+            ),
+            IOSUiSettings(
+              title: 'Crop Profile Photo',
+              aspectRatioLockEnabled: true,
+              resetAspectRatioEnabled: false,
+            ),
+          ],
         );
+        if (croppedFile != null) {
+          ref.read(settingsProvider.notifier).updateProfilePhoto(croppedFile.path);
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Profile picture updated!')),
+            );
+          }
+        }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to pick profile picture')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to pick profile picture')),
+        );
+      }
     }
   }
 
@@ -818,7 +846,88 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             const SizedBox(height: 24.0),
 
-            // 5. ABOUT SECTION
+            // 5. SHORTCUTS SECTION
+            _buildSectionHeader('SHORTCUTS', secondaryTextColor),
+            const SizedBox(height: 8.0),
+
+            Container(
+              decoration: BoxDecoration(
+                color: cardBgColor,
+                borderRadius: BorderRadius.circular(16.0),
+                border: Border.all(color: borderColor),
+              ),
+              child: FutureBuilder<bool>(
+                future: VolumeShortcutService.hasExplainedPermission(),
+                builder: (context, snapshot) {
+                  return ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    leading: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryContainer.withOpacity(isDark ? 0.2 : 0.5),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(Icons.volume_down_rounded, color: AppColors.primary, size: 20.0),
+                    ),
+                    title: Text(
+                      'Volume-Down Quick-Add',
+                      style: AppConstants.getBodyMdStyle(color: primaryTextColor).copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 4.0),
+                      child: Text(
+                        'Long-press Volume Down (3s) to add expense',
+                        style: AppConstants.getLabelSmStyle(color: secondaryTextColor),
+                      ),
+                    ),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () async {
+                      HapticFeedback.lightImpact();
+                      // Show explanation dialog
+                      await showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          backgroundColor: cardBgColor,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
+                          title: Text(
+                            'Enable Shortcut',
+                            style: AppConstants.getHeadlineSmStyle(color: primaryTextColor),
+                          ),
+                          content: Text(
+                            'SpendTrail uses Android Accessibility Services only to detect a long-press on the Volume Down button as a quick shortcut to add an expense.\n\nNo other data is read or collected. You must enable this manually in Settings.',
+                            style: AppConstants.getBodyMdStyle(color: secondaryTextColor),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text('Cancel', style: AppConstants.getLabelMdStyle(color: secondaryTextColor)),
+                            ),
+                            ElevatedButton(
+                              onPressed: () async {
+                                Navigator.pop(context);
+                                await VolumeShortcutService.markPermissionExplained();
+                                await VolumeShortcutService.openAccessibilitySettings();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                                foregroundColor: Colors.white,
+                              ),
+                              child: const Text('Open Settings'),
+                            ),
+                          ],
+                        ),
+                      );
+                      setState(() {}); // Refresh UI if needed
+                    },
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 24.0),
+
+            // 6. ABOUT SECTION
             _buildSectionHeader('ABOUT', secondaryTextColor),
             const SizedBox(height: 8.0),
 
