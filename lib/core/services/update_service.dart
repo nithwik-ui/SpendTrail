@@ -48,14 +48,19 @@ class UpdateService extends StateNotifier<UpdateState> {
 
   UpdateService() : super(const UpdateState());
 
-  /// Parse a version tag like "v1.0.5" into [major, minor, patch]
+  /// Parse a version tag like "v1.0.5+3" into [major, minor, patch, build]
   List<int> _parseVersion(String tag) {
-    final cleaned = tag.replaceFirst(RegExp(r'^v'), '');
-    final parts = cleaned.split('.');
+    final cleanedTag = tag.replaceFirst(RegExp(r'^v'), '');
+    final partsWithBuild = cleanedTag.split('+');
+    final versionPart = partsWithBuild[0].split('-')[0]; // strip prerelease suffix
+    final buildPart = partsWithBuild.length > 1 ? partsWithBuild[1] : '0';
+    
+    final versionNumbers = versionPart.split('.');
     return [
-      int.tryParse(parts.isNotEmpty ? parts[0] : '0') ?? 0,
-      int.tryParse(parts.length > 1 ? parts[1] : '0') ?? 0,
-      int.tryParse(parts.length > 2 ? parts[2] : '0') ?? 0,
+      int.tryParse(versionNumbers.isNotEmpty ? versionNumbers[0] : '0') ?? 0,
+      int.tryParse(versionNumbers.length > 1 ? versionNumbers[1] : '0') ?? 0,
+      int.tryParse(versionNumbers.length > 2 ? versionNumbers[2] : '0') ?? 0,
+      int.tryParse(buildPart) ?? 0,
     ];
   }
 
@@ -63,7 +68,7 @@ class UpdateService extends StateNotifier<UpdateState> {
   bool _isNewer(String remoteTag, String localTag) {
     final remote = _parseVersion(remoteTag);
     final local = _parseVersion(localTag);
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 4; i++) {
       if (remote[i] > local[i]) return true;
       if (remote[i] < local[i]) return false;
     }
@@ -74,9 +79,9 @@ class UpdateService extends StateNotifier<UpdateState> {
   Future<UpdateInfo?> checkForUpdates() async {
     state = const UpdateState(isChecking: true);
     try {
-      // Get current installed version dynamically
+      // Get current installed version and build number dynamically
       final packageInfo = await PackageInfo.fromPlatform();
-      final currentVersion = 'v${packageInfo.version}';
+      final currentVersion = 'v${packageInfo.version}+${packageInfo.buildNumber}';
 
       final client = HttpClient();
       client.connectionTimeout = const Duration(seconds: 10);
