@@ -69,7 +69,7 @@ class AnalyticsScreen extends ConsumerWidget {
               color: hasValue
                   ? AppColors.primary
                   : (isDark
-                      ? const Color(0xFF1E293B)
+                      ? const Color(0xFF1E2430)
                       : const Color(0xFFE2E8F0)),
               width: 6.0,
               borderRadius: const BorderRadius.only(
@@ -95,9 +95,9 @@ class AnalyticsScreen extends ConsumerWidget {
     final secondaryTextColor =
         isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
     final cardBgColor =
-        isDark ? const Color(0xFF121212) : AppColors.surfaceContainerLowest;
+        isDark ? AppColors.darkCard : AppColors.surfaceContainerLowest;
     final borderColor =
-        isDark ? const Color(0xFF222222) : AppColors.surfaceContainer;
+        isDark ? AppColors.darkBorder : AppColors.surfaceContainer;
 
     // Calculate metrics
     final totalSpent = state.currentTotal;

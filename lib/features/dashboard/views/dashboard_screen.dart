@@ -21,8 +21,8 @@ class DashboardScreen extends ConsumerWidget {
 
     final primaryTextColor = isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
     final secondaryTextColor = isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
-    final cardBgColor = isDark ? const Color(0xFF1E293B) : AppColors.surfaceContainerLow;
-    final borderColor = isDark ? const Color(0xFF334155) : AppColors.surfaceContainer;
+    final cardBgColor = isDark ? AppColors.darkCard : AppColors.surfaceContainerLow;
+    final borderColor = isDark ? AppColors.darkBorder : AppColors.surfaceContainer;
 
     // Dynamically compute progress
     final double budgetLimit = settings.monthlyBudget;
@@ -296,7 +296,7 @@ class DashboardScreen extends ConsumerWidget {
                         ? Container(
                             padding: const EdgeInsets.symmetric(vertical: 40.0),
                             decoration: BoxDecoration(
-                              color: isDark ? const Color(0xFF1E293B) : AppColors.surfaceContainerLowest,
+                              color: isDark ? AppColors.darkCard : AppColors.surfaceContainerLowest,
                               borderRadius: BorderRadius.circular(16.0),
                               border: Border.all(color: borderColor),
                             ),

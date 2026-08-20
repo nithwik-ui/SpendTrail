@@ -103,9 +103,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
     final primaryTextColor = isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
     final secondaryTextColor = isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
-    final cardBgColor = isDark ? const Color(0xFF121212) : AppColors.surfaceContainerLowest;
-    final borderColor = isDark ? const Color(0xFF222222) : AppColors.surfaceContainer;
-    final inputBgColor = isDark ? const Color(0xFF1A1A1A) : AppColors.surfaceContainerLow;
+    final cardBgColor = isDark ? AppColors.darkCard : AppColors.surfaceContainerLowest;
+    final borderColor = isDark ? AppColors.darkBorder : AppColors.surfaceContainer;
+    final inputBgColor = isDark ? AppColors.darkBg : AppColors.surfaceContainerLow;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -128,10 +128,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     const SizedBox(height: 24.0),
                     // 1. APP LOGO & SUBTITLE
                     Center(
-                      child: Image.asset(
-                        'assets/logo.png',
-                        height: 120.0,
-                        fit: BoxFit.contain,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20.0),
+                        child: Image.asset(
+                          'assets/icon.png',
+                          height: 80.0,
+                          width: 80.0,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 16.0),

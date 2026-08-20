@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../config/constants.dart';
-import '../../../core/services/volume_shortcut_service.dart';
 import '../../add_expense/views/add_expense_sheet.dart';
 import 'dashboard_screen.dart';
 import '../../history/views/history_screen.dart';
@@ -28,22 +27,6 @@ class _HomeNavigationParentState extends State<HomeNavigationParent> {
   @override
   void initState() {
     super.initState();
-
-    // Initialize volume shortcut listener
-    VolumeShortcutService.onQuickAddRequested = _openQuickAddSheet;
-
-    // Check if there was a pending quick-add from before Flutter was ready
-    _checkPendingQuickAdd();
-  }
-
-  Future<void> _checkPendingQuickAdd() async {
-    final pending = await VolumeShortcutService.checkPendingQuickAdd();
-    if (pending && mounted) {
-      // Small delay to ensure the widget tree is built
-      Future.delayed(const Duration(milliseconds: 300), () {
-        if (mounted) _openQuickAddSheet();
-      });
-    }
   }
 
   void _openQuickAddSheet() {
@@ -58,7 +41,6 @@ class _HomeNavigationParentState extends State<HomeNavigationParent> {
 
   @override
   void dispose() {
-    VolumeShortcutService.onQuickAddRequested = null;
     super.dispose();
   }
 
@@ -80,8 +62,8 @@ class _HomeNavigationParentState extends State<HomeNavigationParent> {
     
     final activeColor = AppColors.primary;
     final inactiveColor = isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
-    final barBg = isDark ? const Color(0xFF1E293B) : AppColors.surfaceContainerLowest;
-    final borderColor = isDark ? const Color(0xFF334155) : AppColors.surfaceContainer;
+    final barBg = isDark ? AppColors.darkCard : AppColors.surfaceContainerLowest;
+    final borderColor = isDark ? AppColors.darkBorder : AppColors.surfaceContainer;
 
     return Scaffold(
       body: IndexedStack(

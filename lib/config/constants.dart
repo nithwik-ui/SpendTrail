@@ -31,11 +31,11 @@ class AppColors {
   static const Color outlineVariant = Color(0xFFBEC8CA);
 
   // Sleek Dark Theme Colors
-  static const Color darkBg = Color(0xFF0F172A);
-  static const Color darkCard = Color(0xFF1E293B);
-  static const Color darkTextPrimary = Color(0xFFF8FAFC);
-  static const Color darkTextSecondary = Color(0xFF94A3B8);
-  static const Color darkBorder = Color(0xFF334155);
+  static const Color darkBg = Color(0xFF090E11);
+  static const Color darkCard = Color(0xFF141C22);
+  static const Color darkTextPrimary = Color(0xFFF0F4F8);
+  static const Color darkTextSecondary = Color(0xFF90A0B0);
+  static const Color darkBorder = Color(0xFF222D37);
 }
 
 class AppCategory {

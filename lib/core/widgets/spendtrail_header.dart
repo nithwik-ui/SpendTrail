@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../config/constants.dart';
 import '../providers/settings_provider.dart';
+import '../../features/dashboard/views/budget_overview_screen.dart';
 
 class SpendTrailHeader extends ConsumerWidget implements PreferredSizeWidget {
   final bool showProfileOnly;
@@ -79,7 +80,14 @@ class SpendTrailHeader extends ConsumerWidget implements PreferredSizeWidget {
               Icons.account_balance_wallet_rounded,
               color: primaryColor,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const BudgetOverviewScreen(),
+                ),
+              );
+            },
           ),
         ),
       ],

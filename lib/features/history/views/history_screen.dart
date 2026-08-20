@@ -40,9 +40,9 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
 
     final primaryTextColor = isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
     final secondaryTextColor = isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
-    final cardBgColor = isDark ? const Color(0xFF1E293B) : AppColors.surfaceContainerLowest;
-    final inputBgColor = isDark ? const Color(0xFF0F172A) : AppColors.surfaceContainerLow;
-    final borderColor = isDark ? const Color(0xFF334155) : AppColors.surfaceContainer;
+    final cardBgColor = isDark ? AppColors.darkCard : AppColors.surfaceContainerLowest;
+    final inputBgColor = isDark ? AppColors.darkBg : AppColors.surfaceContainerLow;
+    final borderColor = isDark ? AppColors.darkBorder : AppColors.surfaceContainer;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,

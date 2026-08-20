@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/constants.dart';
 import '../../../core/models/expense.dart';
 import '../../../core/providers/expense_provider.dart';
-import '../../../core/services/volume_shortcut_service.dart';
 
 class AddExpenseSheet extends ConsumerStatefulWidget {
   const AddExpenseSheet({super.key});
@@ -74,9 +73,6 @@ class _AddExpenseSheetState extends ConsumerState<AddExpenseSheet> {
     ref.read(expenseProvider.notifier).addExpense(newExpense);
 
     Navigator.of(context).pop();
-    
-    // If launched via volume shortcut from background, return to previous app
-    VolumeShortcutService.moveTaskToBack();
   }
 
   Future<void> _selectDate() async {
@@ -114,9 +110,9 @@ class _AddExpenseSheetState extends ConsumerState<AddExpenseSheet> {
     
     final primaryTextColor = isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
     final secondaryTextColor = isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
-    final cardBgColor = isDark ? const Color(0xFF1E293B) : AppColors.surfaceContainerLowest;
-    final inputBgColor = isDark ? const Color(0xFF0F172A) : AppColors.surfaceContainerLow;
-    final borderColor = isDark ? const Color(0xFF334155) : AppColors.surfaceContainer;
+    final cardBgColor = isDark ? AppColors.darkCard : AppColors.surfaceContainerLowest;
+    final inputBgColor = isDark ? AppColors.darkBg : AppColors.surfaceContainerLow;
+    final borderColor = isDark ? AppColors.darkBorder : AppColors.surfaceContainer;
 
     return Container(
       decoration: BoxDecoration(

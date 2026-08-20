@@ -12,9 +12,6 @@ import java.io.File
 
 class MainActivity : FlutterActivity() {
     private val UPDATER_CHANNEL = "com.spendtrail.spendtrail/updater"
-    private val SHORTCUT_CHANNEL = "com.spendtrail.spendtrail/shortcut"
-
-    private var pendingQuickAdd = false
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -36,47 +33,6 @@ class MainActivity : FlutterActivity() {
             } else {
                 result.notImplemented()
             }
-        }
-
-        // ── Shortcut channel ────────────────────────────────────────
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SHORTCUT_CHANNEL).setMethodCallHandler { call, result ->
-            when (call.method) {
-                "moveTaskToBack" -> {
-                    moveTaskToBack(true)
-                    result.success(true)
-                }
-                "checkPendingQuickAdd" -> {
-                    result.success(pendingQuickAdd)
-                    pendingQuickAdd = false
-                }
-                "openAccessibilitySettings" -> {
-                    val intent = Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
-                    result.success(true)
-                }
-                else -> result.notImplemented()
-            }
-        }
-
-        // Check if launched with quick-add intent
-        handleQuickAddIntent(intent)
-    }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        handleQuickAddIntent(intent)
-    }
-
-    private fun handleQuickAddIntent(intent: Intent?) {
-        if (intent?.getBooleanExtra("OPEN_QUICK_ADD", false) == true) {
-            pendingQuickAdd = true
-            // Notify Flutter side via method channel if engine is ready
-            flutterEngine?.dartExecutor?.binaryMessenger?.let { messenger ->
-                MethodChannel(messenger, SHORTCUT_CHANNEL).invokeMethod("openQuickAdd", null)
-            }
-            // Clear the flag so re-delivery doesn't re-trigger
-            intent.removeExtra("OPEN_QUICK_ADD")
         }
     }
 

@@ -65,32 +65,32 @@ class SpendTrailApp extends ConsumerWidget {
         ),
       ),
 
-      // True Black OLED Dark Theme
+      // Premium Dark Theme
       darkTheme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF000000),
+        scaffoldBackgroundColor: AppColors.darkBg,
         primaryColor: AppColors.primaryContainer,
         textTheme: textTheme,
         colorScheme: const ColorScheme.dark(
           primary: AppColors.primaryContainer,
           secondary: AppColors.secondary,
-          surface: Color(0xFF121212),
+          surface: AppColors.darkCard,
           onSurface: AppColors.darkTextPrimary,
-          background: Color(0xFF000000),
-          outline: AppColors.outline,
-          outlineVariant: Color(0xFF222222),
+          background: AppColors.darkBg,
+          outline: AppColors.darkBorder,
+          outlineVariant: Color(0xFF1E2833),
         ),
         cardTheme: CardThemeData(
-          color: const Color(0xFF121212),
+          color: AppColors.darkCard,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.0), // 16px radius audit
-            side: const BorderSide(color: Color(0xFF222222), width: 1),
+            borderRadius: BorderRadius.circular(16.0),
+            side: const BorderSide(color: AppColors.darkBorder, width: 1),
           ),
         ),
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF000000),
+          backgroundColor: AppColors.darkBg,
           elevation: 0,
           centerTitle: false,
           iconTheme: IconThemeData(color: AppColors.darkTextPrimary),
