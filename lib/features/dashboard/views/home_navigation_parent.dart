@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/constants.dart';
+import '../../../core/providers/navigation_provider.dart';
 import '../../add_expense/views/add_expense_sheet.dart';
 import 'dashboard_screen.dart';
 import '../../history/views/history_screen.dart';
 import '../../settings/views/settings_screen.dart';
 import '../../analytics/views/analytics_screen.dart';
 
-class HomeNavigationParent extends StatefulWidget {
+class HomeNavigationParent extends ConsumerStatefulWidget {
   const HomeNavigationParent({super.key});
 
   @override
-  State<HomeNavigationParent> createState() => _HomeNavigationParentState();
+  ConsumerState<HomeNavigationParent> createState() => _HomeNavigationParentState();
 }
 
-class _HomeNavigationParentState extends State<HomeNavigationParent> {
-  int _currentIndex = 0;
-
+class _HomeNavigationParentState extends ConsumerState<HomeNavigationParent> {
   final List<Widget> _screens = [
     const DashboardScreen(),
     const AnalyticsScreen(),
@@ -45,20 +45,20 @@ class _HomeNavigationParentState extends State<HomeNavigationParent> {
   }
 
   void _onTabTapped(int index) {
-    if (_currentIndex == index) return;
+    final currentIndex = ref.read(navigationProvider);
+    if (currentIndex == index) return;
     
     // Tactile haptic feedback on tab change
     HapticFeedback.lightImpact();
     
-    setState(() {
-      _currentIndex = index;
-    });
+    ref.read(navigationProvider.notifier).state = index;
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final currentIndex = ref.watch(navigationProvider);
     
     final activeColor = AppColors.primary;
     final inactiveColor = isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
@@ -67,7 +67,7 @@ class _HomeNavigationParentState extends State<HomeNavigationParent> {
 
     return Scaffold(
       body: IndexedStack(
-        index: _currentIndex,
+        index: currentIndex,
         children: _screens,
       ),
       bottomNavigationBar: Container(
@@ -83,10 +83,10 @@ class _HomeNavigationParentState extends State<HomeNavigationParent> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildNavItem(0, Icons.home_rounded, 'Home', activeColor, inactiveColor),
-                _buildNavItem(1, Icons.analytics_rounded, 'Analytics', activeColor, inactiveColor),
-                _buildNavItem(2, Icons.receipt_long_rounded, 'History', activeColor, inactiveColor),
-                _buildNavItem(3, Icons.settings_rounded, 'Settings', activeColor, inactiveColor),
+                _buildNavItem(0, Icons.home_rounded, 'Home', activeColor, inactiveColor, currentIndex),
+                _buildNavItem(1, Icons.analytics_rounded, 'Analytics', activeColor, inactiveColor, currentIndex),
+                _buildNavItem(2, Icons.receipt_long_rounded, 'History', activeColor, inactiveColor, currentIndex),
+                _buildNavItem(3, Icons.settings_rounded, 'Settings', activeColor, inactiveColor, currentIndex),
               ],
             ),
           ),
@@ -95,8 +95,8 @@ class _HomeNavigationParentState extends State<HomeNavigationParent> {
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon, String label, Color activeColor, Color inactiveColor) {
-    final isSelected = _currentIndex == index;
+  Widget _buildNavItem(int index, IconData icon, String label, Color activeColor, Color inactiveColor, int currentIndex) {
+    final isSelected = currentIndex == index;
     
     return Expanded(
       child: InkWell(

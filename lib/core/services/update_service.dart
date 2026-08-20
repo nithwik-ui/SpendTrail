@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
 
 class UpdateInfo {
   final String version;
@@ -115,7 +116,7 @@ class UpdateService extends StateNotifier<UpdateState> {
       state = const UpdateState();
       return null;
     } catch (e) {
-      state = UpdateState(errorMessage: 'Failed to reach updates server: $e');
+      state = const UpdateState(errorMessage: 'Unable to reach updates server. Please check your internet connection.');
       return null;
     }
   }
@@ -124,7 +125,8 @@ class UpdateService extends StateNotifier<UpdateState> {
   Future<bool> downloadAndInstallUpdate(UpdateInfo info) async {
     state = state.copyWith(isDownloading: true, downloadProgress: '0%', errorMessage: null);
     try {
-      final tempDir = Directory.systemTemp;
+      final dirs = await getExternalCacheDirectories();
+      final tempDir = (dirs != null && dirs.isNotEmpty) ? dirs.first : await getTemporaryDirectory();
       final apkFile = File('${tempDir.path}/spendtrail-update.apk');
       
       if (await apkFile.exists()) {
@@ -162,7 +164,7 @@ class UpdateService extends StateNotifier<UpdateState> {
       state = const UpdateState();
       return success;
     } catch (e) {
-      state = state.copyWith(isDownloading: false, errorMessage: 'Installation failed: $e');
+      state = state.copyWith(isDownloading: false, errorMessage: 'Failed to download update. Please check your internet connection.');
       return false;
     }
   }

@@ -23,6 +23,7 @@ import '../../../core/utils/backup_helper_stub.dart'
     if (dart.library.html) '../../../core/utils/backup_helper_web.dart'
     if (dart.library.io) '../../../core/utils/backup_helper_mobile.dart';
 import '../../../core/services/update_service.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -35,6 +36,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   late TextEditingController _budgetController;
   late TextEditingController _nameController;
   late FocusNode _nameFocusNode;
+  String _appVersion = '1.0.6';
 
   @override
   void initState() {
@@ -45,6 +47,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
     _nameController = TextEditingController(text: settings.userName);
     _nameFocusNode = FocusNode();
+    _loadAppVersion();
     
     // Auto-save name on focus loss
     _nameFocusNode.addListener(() {
@@ -60,6 +63,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     _nameController.dispose();
     _nameFocusNode.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadAppVersion() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    if (mounted) {
+      setState(() {
+        _appVersion = packageInfo.version;
+      });
+    }
   }
 
   String _formatNumberWithCommas(int number) {
@@ -315,7 +327,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       // 2. An update is available! Show confirmation dialog to install
       showDialog(
         context: context,
-        barrierDismissible: false,
+        barrierDismissible: true,
         builder: (context) {
           return Consumer(
             builder: (context, ref, child) {
@@ -348,6 +360,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ],
                 ),
                 actions: [
+                  if (state.isDownloading)
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Run in Background'),
+                    ),
                   if (!state.isDownloading) ...[
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(),
@@ -381,7 +398,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         builder: (context) {
           return AlertDialog(
             title: Text(state.errorMessage != null ? 'Checking Failed' : 'Up to Date', style: const TextStyle(fontWeight: FontWeight.bold)),
-            content: Text(state.errorMessage ?? 'You are already on the latest version of SpendTrail (v1.0.4).'),
+            content: Text(state.errorMessage ?? 'You are already on the latest version of SpendTrail (v$_appVersion).'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
@@ -397,6 +414,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
+    final updateState = ref.watch(updateServiceProvider);
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -808,38 +826,66 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Current Version',
-                        style: AppConstants.getBodyMdStyle(color: primaryTextColor).copyWith(
-                          fontWeight: FontWeight.w600,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Current Version',
+                          style: AppConstants.getBodyMdStyle(color: primaryTextColor).copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          'v$_appVersion',
+                          style: AppConstants.getLabelSmStyle(color: secondaryTextColor),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (updateState.isDownloading)
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            'Downloading: ${updateState.downloadProgress ?? '0%'}',
+                            style: AppConstants.getLabelSmStyle(color: AppColors.primary).copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 6.0),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(4.0),
+                            child: LinearProgressIndicator(
+                              value: _parseProgress(updateState.downloadProgress),
+                              color: AppColors.primary,
+                              backgroundColor: isDark ? const Color(0xFF1E2833) : AppColors.surfaceContainerHigh,
+                              minHeight: 6.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  else
+                    ElevatedButton(
+                      onPressed: _checkForUpdates,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.0), // 16px corner radius audit
+                        ),
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        'Check for Updates',
+                        style: AppConstants.getLabelMdStyle(color: Colors.white).copyWith(
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(
-                        'v1.0.4',
-                        style: AppConstants.getLabelSmStyle(color: secondaryTextColor),
-                      ),
-                    ],
-                  ),
-                  ElevatedButton(
-                    onPressed: _checkForUpdates,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.0), // 16px corner radius audit
-                      ),
-                      elevation: 0,
                     ),
-                    child: Text(
-                      'Check for Updates',
-                      style: AppConstants.getLabelMdStyle(color: Colors.white).copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -911,5 +957,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       thickness: 1.0,
       color: color.withOpacity(0.3),
     );
+  }
+
+  double? _parseProgress(String? progressStr) {
+    if (progressStr == null) return null;
+    final cleaned = progressStr.replaceAll('%', '').trim();
+    final doubleVal = double.tryParse(cleaned);
+    if (doubleVal != null) {
+      return doubleVal / 100.0;
+    }
+    return null;
   }
 }

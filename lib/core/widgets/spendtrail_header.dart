@@ -3,7 +3,9 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../config/constants.dart';
+import 'package:flutter/services.dart';
 import '../providers/settings_provider.dart';
+import '../providers/navigation_provider.dart';
 import '../../features/dashboard/views/budget_overview_screen.dart';
 
 class SpendTrailHeader extends ConsumerWidget implements PreferredSizeWidget {
@@ -50,17 +52,23 @@ class SpendTrailHeader extends ConsumerWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: false,
       leading: Padding(
         padding: const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 8.0),
-        child: Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: isDark
-                  ? const Color(0xFF334155)
-                  : AppColors.outlineVariant.withOpacity(0.2),
-              width: 1.0,
+        child: GestureDetector(
+          onTap: () {
+            HapticFeedback.lightImpact();
+            ref.read(navigationProvider.notifier).state = 3; // Switch to settings tab index 3
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: isDark
+                    ? const Color(0xFF334155)
+                    : AppColors.outlineVariant.withOpacity(0.2),
+                width: 1.0,
+              ),
             ),
+            child: ClipOval(child: avatarWidget),
           ),
-          child: ClipOval(child: avatarWidget),
         ),
       ),
       leadingWidth: 56.0,
